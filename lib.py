@@ -4,6 +4,7 @@ import time
 import colorama
 from colorama import Back, Style, Fore
 import sqlite3
+import random
 
 
 debug_mode=False
@@ -52,7 +53,7 @@ success=f"{Fore.GREEN}[✓]{Style.RESET_ALL}"
 unkown_error="Неизвестная ошибка"
 file_bot_not_exists="Файл bot.py не существует, создайте его в папке с этой программой"
 
-main_menu=black + f"{dmp} | Version: {version}\n\n1. Создать нового бота\n2. Редактировать существующего бота\n3. Настройки\n4. Помощь\n: "
+main_menu=black + f"{dmp} | Version: {version}\n\n1. Создать нового бота\n2. Редактировать существующего бота\n3. Запустить бота\n4. Помощь\n: "
 name_input=black + "Введите название бота...\n: "
 prefix_input=black + "Введите префикс бота...\n: "
 text_on_ready_input=black + "Введите текст при старте бота...\n: "
@@ -75,7 +76,7 @@ setting_show_all_information_input=black + f"Статус: {show_all_information
 saving=warning + f"{black} Сохранение..."
 successful=success + f"{black} Успешно"
 command_name_input=black + "Введите название команды...\n: "
-command_actions_input=black + "Добавьте действия к команде:\n1. Бан\n2. Отправить сообщение\n3. Рандомизировать число и отправить его\n4. Случайный выбор\n5. Отправить embed сообщение\n0. Отмена\n: "
+command_actions_input=black + "Добавьте действия к команде:\n1. Бан\n2. Отправить сообщение\n3. Рандомизировать число и отправить его\n4. Случайный выбор\n5. Добавить embed\n6. Отправить сообщение пользователю\n7. Управление сервером\n0. Отмена\n: "
 
 
 
@@ -180,7 +181,7 @@ client.run("{token}")#запускаем бота с токеном...""")
 				print(successful)
 			elif menu =="4":
 				clear()
-				token_new=input(prefix_new_input)
+				token_new=input(token_new_input)
 				clear()
 				with open('bot.py', 'r') as file:
 					filedata = file.read()
@@ -214,34 +215,48 @@ async def {command_name}(ctx):
 					command_actions=input(command_actions_input)
 					clear()
 					if command_actions =="1":
-						print(saving)
-						with open('bot.py', 'r') as f:
+							print(saving)
+							with open('bot.py', 'r') as f:
 						#"Добавьте действия к команде:\n1. Бан\n2. Кик\n3. Отправить сообщение\n4. Рандомизировать число и отправить его\n5. Случайный выбор\n6. Embed сообщение\n: "
-							filedata=f.read()
-						filedata=filedata.replace(f'''
+								filedata=f.read()
+							filedata=filedata.replace(f'''
 @client.command()
 async def {command_name}(ctx):''', f'''
 @client.command()
 async def {command_name}(ctx, member: discord.Member):
 	await member.ban(reason="Ban")
 	''')
-						with open('bot.py', 'w') as f:
-							f.write(filedata)
-						time.sleep(1)
-						clear()
-						print(successful)
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							command_ban=True
+							time.sleep(1)
+							clear()
+							print(successful)
 					elif command_actions =="2":
-						text=input(black + "Введите текст, который нужно отправить...\n: ")
-						print(saving)
-						with open('bot.py', 'r') as f:
+						type=input(black + "Выберите тип сообщения\n1. Embed\n2. Обычный\n: ")
+						if type =="1":
+							a=input(black + "Вы уверены?\nПрежде чем делать отправку embed сообщения, обязательно добавьте сам embed, в команду, иначе бот ничего не отправит\n1. Ок\n2. Отмена\n: ")
+							if a =="2":
+								raise SystemExit
+							with open('bot.py', 'r') as f:
 						#"Добавьте действия к команде:\n1. Бан\n2. Кик\n3. Отправить сообщение\n4. Рандомизировать число и отправить его\n5. Случайный выбор\n6. Embed сообщение\n: "
-							filedata=f.read()
-						filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
-	await ctx.send('{text}')
-	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.send(embed=embed)	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
 ''')
-						with open('bot.py', 'w') as f:
-							f.write(filedata)
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+						elif type =="2":
+							text=input(black + "Введите текст сообщения...\n: ")
+							with open('bot.py', 'r') as f:
+						#"Добавьте действия к команде:\n1. Бан\n2. Кик\n3. Отправить сообщение\n4. Рандомизировать число и отправить его\n5. Случайный выбор\n6. Embed сообщение\n: "
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.send('{text}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+						print(saving)
 						time.sleep(1)
 						clear()
 						print(successful)
@@ -283,15 +298,14 @@ async def {command_name}(ctx, member: discord.Member):
 						print(successful)
 					elif command_actions =="5":
 					#embed message
-						title=input(black + "Введите заголовок сообщения...\n: ")
-						description=input(black + "Введите описание (текст) сообщения...\n: ")
+						title=input(black + "Введите заголовок embed сообщения...\n: ")
+						description=input(black + "Введите описание embed сообщения...\n: ")
 						print(saving)
 						with open('bot.py', 'r') as f:
 						#"Добавьте действия к команде:\n1. Бан\n2. Кик\n3. Отправить сообщение\n4. Рандомизировать число и отправить его\n5. Случайный выбор\n6. Embed сообщение\n: "
 							filedata=f.read()
 						filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
 	embed=discord.Embed(title='{title}', description='{description}')
-	await ctx.send(embed=embed)
 	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
 ''')
 						with open('bot.py', 'w') as f:
@@ -299,122 +313,443 @@ async def {command_name}(ctx, member: discord.Member):
 							time.sleep(1)
 							clear()
 							print(successful)
+					elif command_actions =="6":
+						type=input(black + "Выберите тип сообщения\n1. Embed\n2. Обычный\n: ")
+						if type =="1":
+							a=input(black + "Вы уверены?\nПрежде чем делать отправку embed сообщения, обязательно добавьте сам embed, в команду, иначе бот ничего не отправит\n1. Ок\n2. Отмена\n: ")
+							if a =="2":
+								raise SystemExit
+							with open('bot.py', 'r') as f:
+						#"Добавьте действия к команде:\n1. Бан\n2. Кик\n3. Отправить сообщение\n4. Рандомизировать число и отправить его\n5. Случайный выбор\n6. Embed сообщение\n: "
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.author.send(embed=embed)	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+						elif type =="1":
+							text=input(black + "Введите текст сообщения...\n: ")
+							with open('bot.py', 'r') as f:
+						#"Добавьте действия к команде:\n1. Бан\n2. Кик\n3. Отправить сообщение\n4. Рандомизировать число и отправить его\n5. Случайный выбор\n6. Embed сообщение\n: "
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.author.send('{text}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+						print(saving)
+						time.sleep(1)
+						clear()
+						print(successful)
+					elif command_actions =="7":
+						clear()
+						type=input(black + "Управление сервером\n1. Изменить аватарку\n2. Изменить название\n3. Создать роль\n4. Создать текстовый канал\n5. Создать категорию\n7. Создать голосовой канал\n9. Выйти с сервера\n0. Назад\n: ")
+						if type =="0":
+							pass
+						elif type =="1":
+							clear()
+							print(warning + " Замените image.png на своё изображение!")
+							time.sleep(1.5)
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	with open('image.png', 'rb') as f:
+		icon = f.read()
+	await ctx.guild.edit(icon=icon)	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="2":
+							clear()
+							name=input(black + "Введите новое название сервера...\n: ")
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.guild.edit(name='{name}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="3":
+							clear()
+							name=input(black + "Введите название роли...\n: ")
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	perms = discord.Permissions(xxxxcodexxxx=None)
+	await ctx.guild.create_role(name='{name}', permissions=perms)	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							permissions=input(black + "Выберите права для роли...\n1. Добавлять реакции\n2. Администратор\n3. Прикреплять файлы\n4. Банить участников\n5. Изменять никнейм\n6. Присоединяться к голосовому каналу\n7. Создавать приглашения\n8. Создавать приватные ветки\n9. Создавать публичные ветки\n10. Отправлять участников подумать о своём поведении\n11. Embed ссылки\n12. Использовать эмодзи с других серверов\n13. Использовать стикеры с других серверов\n14. Кикать участников\n15. Управлять каналами\n16. Управлять эмодзи\n17. Управлять эмодзи и стикерами\n18. Управлять событиями\n19. Управлять сервером\n20. Управлять сообщениями\n21. Управлять никнеймами\n22. Управлять правами\n23. Управлять ролями\n24. Управлять ветками\n25. Управлять вебхуками\n26. Упоминать @everyone\n27. Модерировать участников\n28. Перемещать участников в голосовом канале\n29. Мутить участников в голосовом канале\n30. Приоретный режим в голосовом канале\n31. Читать историю сообщений\n32. Читать сообщения\n33. Попросить выступить на трибуне\n34. Отправлять сообщения\n35. Отправлять сообщения в ветках\n36. отправлять tts сообщения\n37. Говорить в голосовом канале\n38. Стримить\n39. Использовать команды приложения\n40. Использовать активности\n41. Просматривать журнал аудита\n42. Просматривать каналы\n: ")
+							if permissions =="1":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'add_reactions=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="2":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'administrator=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="3":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'attach_files=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="4":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'ban_members=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="5":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'change_nickname=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="6":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'connect=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="7":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'create_instant_invite=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="8":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'create_private_threads=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="9":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'create_public_threads=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="10":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'deafen_members=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="11":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'embed_links=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="12":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'external_emojis=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="13":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'external_stickers=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="14":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'kick_members=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="15":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_channels=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="16":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_emojis=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="17":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_emojis_and_stickers=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="18":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_events=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="19":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_guild=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="20":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_messages=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="21":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_nicknames=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="22":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_permissions=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="23":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_roles=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="24":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_threads=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="25":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'manage_webhooks=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="26":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'mention_everyone=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="27":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'moderate_members=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="28":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'move_members=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="29":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'mute_members=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="30":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'priority_speaker=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="31":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'read_message_history=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="32":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'read_messages=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="33":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'request_to_speak=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="34":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'send_messages=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="35":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'send_messages_in_threads=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="36":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'send_tts_messages=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="37":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'speak=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="38":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'stream=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif commands =="39":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'use_application_commands=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="40":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'use_embedded_activities=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="41":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'view_audit_log=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+							elif permissions =="42":
+								with open('bot.py', 'r') as f:
+									filedata=f.read()
+								filedata=filedata.replace(f'xxxxcodexxxx=None',f'view_channel=True, xxxxcodexxxx=None')
+								with open('bot.py', 'w') as f:
+									f.write(filedata)
+									clear()
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="4":
+							clear()
+							name = input(black + "Введите название текстового канала...\n: ")
+							clear()
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.guild.create_text_channel(name='{name}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="5":
+							clear()
+							name=input(black + "Введите название категории...\n: ")
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.guild.create_category(name='{name}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							clear()
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="6":
+							clear()
+							type=input(black + "Введите название интеграции...\n: ")
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							id = random.randint(123456789, 987654321)
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.guild.create_integration(type='{type}', id='{id}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							clear()
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="7":
+							clear()
+							name=input(black + "Введите название голосового канала...\n: ")
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.guild.create_voice_channel(name='{name}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							clear()
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="8":
+							clear()
+							name=input(black + "Введите название форума...\n: ")
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.guild.create_forum(name='{name}')	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							clear()
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
+						elif type =="9":
+							with open('bot.py', 'r') as f:
+								filedata=f.read()
+							filedata=filedata.replace(f'''#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36''',f'''
+	await ctx.guild.leave()	#XhObmY9TbOlSgOmc52RiA70Mn8H4FsZi99Ytqy6BC1xOpm68GjT36
+''')
+							with open('bot.py', 'w') as f:
+								f.write(filedata)
+							clear()
+							print(saving)
+							time.sleep(1)
+							clear()
+							print(successful)
 					elif command_actions =="0":
 						clear()
 				while True:
 					command_creator()
-
 	elif menu =="3":
 		clear()
-		while True:
-			settings=input(settings_input)
-			if settings =="1":
-				clear()
-				setting_debug=input(setting_debug_input)
-				if setting_debug =="1":
-					with open('lib.py', 'r') as file:
-						filedata = file.read()
-					for row in cur.execute("SELECT debug_mode FROM user WHERE id=1"):
-						debug_mode=f"{row[0]}"
-					filedata = filedata.replace(f'debug_mode={debug_mode}', f'debug_mode=True')
-					with open('lib.py', 'w') as file:
-						file.write(filedata)
-					cur.execute(f"UPDATE user SET debug_mode='True'")
-					conn.commit()
-					clear()
-					print(saving)
-					time.sleep(1)
-					clear()
-					print(successful)
-				elif setting_debug =="2":
-					with open('lib.py', 'r') as file:
-						filedata = file.read()
-					for row in cur.execute("SELECT debug_mode FROM user WHERE id=1"):
-						debug_mode=f"{row[0]}"
-					filedata = filedata.replace(f'debug_mode={debug_mode}', f'debug_mode=False')
-					with open('lib.py', 'w') as file:
-						file.write(filedata)
-					cur.execute(f"UPDATE user SET debug_mode='False'")
-					conn.commit()
-					clear()
-					print(saving)
-					time.sleep(1)
-					clear()
-					print(successful)
-			elif settings =="2":
-				clear()
-				setting_show_token=input(setting_show_token_input)
-				if setting_show_token =="1":
-					with open('lib.py', 'r') as file:
-						filedata = file.read()
-					for row in cur.execute("SELECT show_token FROM user WHERE id=1"):
-						show_token=f"{row[0]}"
-					filedata = filedata.replace(f'show_token={show_token}', f'show_token=True')
-					with open('lib.py', 'w') as file:
-						file.write(filedata)
-					cur.execute(f"UPDATE user SET show_token='True'")
-					conn.commit()
-					clear()
-					print(saving)
-					time.sleep(1)
-					clear()
-					print(successful)
-				elif setting_show_token =="2":
-					with open('lib.py', 'r') as file:
-						filedata = file.read()
-					for row in cur.execute("SELECT show_token FROM user WHERE id=1"):
-						show_all_information=f"{row[0]}"
-					filedata = filedata.replace(f'show_token={show_token}', f'show_token=False')
-					with open('lib.py', 'w') as file:
-						file.write(filedata)
-					cur.execute(f"UPDATE user SET show_token='False'")
-					conn.commit()
-					clear()
-					print(saving)
-					time.sleep(1)
-					clear()
-					print(successful)
-				elif setting_show_token =="0":
-					break
-			elif settings =="3":
-				clear()
-				setting_show_all_information=input(setting_show_all_information_input)
-				clear()
-				if setting_show_all_information =="1":
-					with open('lib.py', 'r') as file:
-						filedata = file.read()
-					for row in cur.execute("SELECT show_all_information FROM user WHERE id=1"):
-						show_all_information=f"{row[0]}"
-					filedata = filedata.replace(f'show_all_information={show_all_information}', f'show_all_information=True')
-					with open('lib.py', 'w') as file:
-						file.write(filedata)
-					cur.execute(f"UPDATE user SET show_all_information='True'")
-					conn.commit()
-					clear()
-					print(saving)
-					time.sleep(1)
-					clear()
-					print(successful)
-				elif setting_show_all_information =="2":
-					with open('lib.py', 'r') as file:
-						filedata = file.read()
-					for row in cur.execute("SELECT show_all_information FROM user WHERE id=1"):
-						show_all_information=f"{row[0]}"
-					filedata = filedata.replace(f'show_all_information={show_all_information}', f'show_all_information=False')
-					with open('lib.py', 'w') as file:
-						file.write(filedata)
-					cur.execute(f"UPDATE user SET show_all_information='False'")
-					conn.commit()
-					clear()
-					print(saving)
-					time.sleep(1)
-					clear()
-					print(successful)
-				
-				elif setting_show_all_information =="0":
-					break
-			elif settings =="0":
-				break
+		print(warning + " Запускаем бота...")
+		time.sleep(1)
+		clear()
+		try:
+			os.system("pip install discord")
+			os.system("python bot.py")
+			clear()
+		except:
+			print(error + " Не удалось запустить бота")
 	elif menu =="4":
 		clear()
 		help=input("В - Вопрос | О - Ответ\nВ: Для чего эта программа?\n-О: Данная программа поможет вам создать своего бота Discord не зная, как это сделать, при этом очень быстро.\n\nВ: Могу ли я редактировать созданную мною команду через программу?\n-О: Нет, вы не можете редактировать что либо в созданной вами команде, перед тем как завершить создание команды, обязательно подумайте, возможно стоит добавить что то ещё\n\nВ: Как получить токен бота?\n-О: Получить токен бота вы можете зарегистрировавшись на сайте discord developers, создав там своё приложение, перейдя во вкладку bot, нажимаете на add bot, и далее нажимаете на кнопку reset token, остаётся лишь скопировать токен, и вставить его когда вы будете создавать своего бота, токен автоматически сохранится вместе с остальными данными, для дальнейшего редактирования бота\n\nВ: Будет ли обновляться программа?\n-О: Да, она будет обновляться, но скорее всего не долго, т.к. у разработчика есть другие планы на будущее, однако не стоит волноваться, программа не будет удалена с GitHub, и будет далее функционировать без проблем, но если всё же вы нашли ошибку в коде, или у вас есть пожелания, то можете отправить письмо на почту: vlad1slav.nice@yandex.ru\n\n0. Назад\n: ")

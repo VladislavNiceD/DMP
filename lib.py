@@ -41,7 +41,7 @@ if show_all_information == True:
 def clear():
 	os.system("clear||cls")
 
-version="1.0"
+version="2.0"
 dmp="DMP"
 dmp0="Discord Management Panel"
 
